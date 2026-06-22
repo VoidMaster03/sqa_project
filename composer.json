@@ -1,0 +1,16 @@
+{
+    "name": "victus/sqa",
+    "autoload": {
+        "psr-4": {
+            "Victus\\Sqa\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "skip"
+        }
+    ],
+    "require": {
+        "monolog/monolog": "^3.10"
+    }
+}
