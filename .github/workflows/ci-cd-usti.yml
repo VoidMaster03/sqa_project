@@ -27,7 +27,6 @@ env:
 #  JOBS
 # ============================================================
 jobs:
-
   # ----------------------------------------------------------
   # JOB 1 — LINT & SYNTAX CHECK
   # Memastikan tidak ada syntax error pada file PHP
@@ -237,44 +236,7 @@ jobs:
             echo "⚠ PERINGATAN: Tidak ada htmlspecialchars! Periksa keamanan output."
 
   # ----------------------------------------------------------
-  # JOB 4 — DEPLOY (hanya saat push ke branch main)
-  # Deploy file ke server via SSH (SCP)
-  # Konfigurasi secrets di: Settings → Secrets → Actions
-  # ----------------------------------------------------------
-  deploy:
-    name: "🚀 Deploy ke Server"
-    runs-on: ubuntu-latest
-    needs: [test, security]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Deploy via SCP ke server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host:     ${{ secrets.SERVER_HOST }}      # IP / domain server
-          username: ${{ secrets.SERVER_USER }}      # username SSH
-          key:      ${{ secrets.SERVER_SSH_KEY }}   # private key SSH
-          port:     ${{ secrets.SERVER_PORT || 22 }}
-          source:   ${{ env.APP_FILE }}
-          target:   ${{ secrets.SERVER_TARGET_DIR }} # mis: /var/www/html/usti/
-
-      - name: Verifikasi deploy (opsional ping HTTP)
-        run: |
-          sleep 3
-          STATUS=$(curl -o /dev/null -s -w "%{http_code}" \
-            "${{ secrets.APP_URL }}/${{ env.APP_FILE }}" || echo "000")
-          echo "HTTP Status: $STATUS"
-          if [ "$STATUS" = "200" ]; then
-            echo "✔ Deploy berhasil — aplikasi merespons 200 OK."
-          else
-            echo "⚠ Periksa server — status HTTP: $STATUS"
-          fi
-
-  # ----------------------------------------------------------
-  # JOB 5 — NOTIFIKASI RINGKASAN
+  # JOB 4 — NOTIFIKASI RINGKASAN
   # Menampilkan ringkasan status pipeline di GitHub Actions
   # ----------------------------------------------------------
   summary:
